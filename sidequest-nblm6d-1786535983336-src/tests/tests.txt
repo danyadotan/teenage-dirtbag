@@ -1,0 +1,55 @@
+# Tests
+
+## Test 1 - Receive a complete surprise challenge with no idea entered [sanity]
+Viewport: mobile
+Covers: empty surprise workflow, rotating local surprise bank, complete Hebrew mobile result
+Description: Verifies the teen receives one complete usable challenge from the local surprise bank even when they provide no subject.
+Steps:
+1. Switch to Hebrew and open "לבנות יתרון"
+2. Leave the idea field empty
+3. Tap "תנו לי אתגר אחד"
+Expected: A complete Hebrew answer appears with a challenge, first move, finish line, and why it builds an edge; it does not end mid-sentence.
+
+## Test 2 - Open device-lock controls
+Viewport: mobile
+Covers: clean mobile shell, iPhone safe-area header, privacy control discoverability, Face ID or Touch ID setup surface, lock status
+Description: Verifies the lock identity is visible and device-lock setup remains available without exposing biometric data.
+Steps:
+1. Confirm there is no stray text above the header, then confirm the lime lock logo appears and tap the lock icon
+2. Review the privacy dialog
+3. Close the dialog
+Expected: No literal \\n text or stray strip appears above the header; the status bar does not overlap the lock logo or Sidequest name; the lock logo remains visible; the dialog explains Face ID, Touch ID, or passcode protection and offers "להפעיל נעילת מכשיר"; the app remains usable.
+
+## Test 3 - Receive a Hebrew thought reframe
+Viewport: mobile
+Covers: Hebrew thought reset AI workflow, language-aware backend generation, localized safety framing
+Description: Verifies a teenager using Hebrew receives a structured answer.
+Steps:
+1. Switch to Hebrew and open "איפוס"
+2. Enter "כולם מבינים מתמטיקה מהר יותר, אז כנראה שאני גרוע בזה"
+3. Tap "עזרו לי להחליף את הסיפור"
+Expected: A visible Hebrew response includes a fairer story plus one action.
+
+## Test 4 - Save and retain a private Hebrew note
+Viewport: desktop
+Covers: Hebrew note creation, local persistence, optional-title fallback, RTL notes layout
+Description: Verifies a rough Hebrew note remains after refresh.
+Steps:
+1. Switch to Hebrew, open Notes, and enter "רעיון למשחק שבו המפה זוכרת את הבחירות שלך" without a title
+2. Tap "לשמור בפרטיות"
+3. Refresh and reopen Notes
+Expected: The note remains visible with an automatic Hebrew title and its text.
+
+## Test 5 - Surface a localized AI failure without losing input
+Viewport: desktop
+Covers: non-boredom backend error handling, retry-safe input retention
+Description: Verifies an AI failure is visible and input remains.
+QA Faults:
+```json
+[{"method":"POST","path":"/api/coach","status":503,"body_json":{"error":"simulated_failure"}}]
+```
+Steps:
+1. Switch to Hebrew and open "עזרה ברגע חברתי"
+2. Enter "אני רוצה לשאול אם אפשר להצטרף לקבוצת הלימוד שלהם"
+3. Tap "עזרו לי עם הרגע הזה"
+Expected: A visible Hebrew retry message appears and the original text remains.
