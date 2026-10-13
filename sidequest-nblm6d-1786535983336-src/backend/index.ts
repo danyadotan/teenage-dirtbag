@@ -28,7 +28,7 @@ export const handler = router({
     if (data.text.length > 5000) return error('Text is too long', 400);
     const language = data.language === 'he' ? 'he' : 'en';
     const surpriseRequest = data.mode === 'bored' && ['surprise me', 'הפתיעו אותי', 'הפתיע אותי'].includes(data.text.trim().toLowerCase());
-    if (surpriseRequest) return json({ answer: surpriseFallback[language], fallback: true });
+    if (surpriseRequest) return json({ answer: pickSurprise(language), fallback: true });
     const languageRule = language === 'he' ? 'Answer only in natural, age-appropriate Hebrew. Use short, clear sections and inclusive plural phrasing where practical.' : 'Answer only in natural, age-appropriate English. Use short, clear sections.';
     try {
       for (let attempt = 0; attempt < 2; attempt += 1) {
@@ -36,10 +36,10 @@ export const handler = router({
         const result = await ai.generate({ system: systems[data.mode] + ' ' + languageRule + retryRule, prompt: 'Context: ' + (data.extra || 'none') + '\nTeen input: ' + data.text.trim(), thinkingMode: 'FAST', temperature: attempt ? 0.35 : 0.5, maxTokens: 900 });
         if (data.mode !== 'bored' || completeBoredomAnswer(result.text)) return json({ answer: result.text });
       }
-      return json({ answer: surpriseFallback[language], fallback: true });
+      return json({ answer: pickSurprise(language), fallback: true });
     } catch (caught) {
       console.error('AI coach failed', caught);
-      if (data.mode === 'bored') return json({ answer: surpriseFallback[language], fallback: true });
+      if (data.mode === 'bored') return json({ answer: pickSurprise(language), fallback: true });
       return error('AI coach unavailable', 503);
     }
   }]
