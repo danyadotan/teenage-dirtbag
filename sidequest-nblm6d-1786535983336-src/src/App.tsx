@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { api } from '@appdeploy/client';
 import { ArrowLeft, ArrowRight, BookOpen, Check, CircleDollarSign, Compass, HeartHandshake, Lightbulb, LoaderCircle, LockKeyhole, MessageCircleHeart, NotebookPen, RefreshCw, ShieldCheck, Sparkles, Trash2, Users, X } from 'lucide-react';
 
 type Page = 'home' | 'bored' | 'thought' | 'friend' | 'notes' | 'earn' | 'volunteer';
@@ -118,7 +117,17 @@ function App() {
   async function ask(mode: Mode, text: string, extra = '') {
     if (!text.trim()) { setMessage(c.oneSentence); return; }
     setBusy(true); setMessage(''); setAnswer('');
-    try { const result = await api.post('/api/coach', { mode, text, extra, language: lang }); setAnswer(result.data.answer); }
+    try {
+      const response = await fetch('/api/coach', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ mode, text, extra, language: lang }),
+      });
+      if (!response.ok) throw new Error('AI coach unavailable');
+      const result = await response.json();
+      if (typeof result.answer !== 'string') throw new Error('Invalid AI coach response');
+      setAnswer(result.answer);
+    }
     catch { setMessage(c.aiError); }
     finally { setBusy(false); }
   }
